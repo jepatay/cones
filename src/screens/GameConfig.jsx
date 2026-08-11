@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import GameDiagram from '../components/GameDiagram';
 import { COLORS } from '../config/colors';
 import { CONE_COUNTS, DURATIONS, REP_COUNTS, SPEED_LEVELS } from '../config/engineConfig';
 
@@ -37,6 +38,8 @@ export default function GameConfig({ gameMode, initialConfig, onStart, onBack })
     <div className="screen game-config">
       <button type="button" className="back-link" onClick={onBack}>&larr; Games</button>
       <h1 className="config-title">{gameMode.name}</h1>
+
+      <GameDiagram gameId={gameMode.id} />
 
       <section className="config-section">
         <h2>Cone count</h2>
@@ -99,7 +102,7 @@ export default function GameConfig({ gameMode, initialConfig, onStart, onBack })
 
       <section className="config-section">
         <h2>Speed</h2>
-        <div className="option-row">
+        <div className="speed-row">
           {SPEED_LEVELS.map((lvl) => (
             <button
               key={lvl.id}

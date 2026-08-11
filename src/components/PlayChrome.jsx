@@ -49,7 +49,7 @@ export default function PlayChrome({ background, onExit, onTap, speed, onSpeedCh
       {showSpeedMenu && (
         <div className="speed-overlay" onClick={(e) => e.stopPropagation()}>
           <p className="speed-overlay-label">Speed</p>
-          <div className="option-row">
+          <div className="speed-row">
             {SPEED_LEVELS.map((lvl) => (
               <button
                 key={lvl.id}

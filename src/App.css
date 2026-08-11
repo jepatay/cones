@@ -84,7 +84,32 @@
 .config-title {
   font-size: 1.7rem;
   font-weight: 800;
-  margin: 8px 0 24px;
+  margin: 8px 0 16px;
+}
+
+.diagram-card {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 24px;
+  background: #1b2029;
+  border: 1px solid #262c38;
+  border-radius: 16px;
+  padding: 14px 14px 12px;
+}
+
+.diagram-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: #9aa1ad;
+}
+
+.diagram-card figcaption {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #9aa1ad;
+  text-align: center;
 }
 
 .config-section {
@@ -122,6 +147,20 @@
   background: #3a6df0;
   border-color: #3a6df0;
   color: #fff;
+}
+
+/* Speed always has exactly 5 options — a grid keeps them on one row instead
+   of wrapping the flex .option-row when the 5th pill runs out of space. */
+.speed-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.speed-row .option-pill {
+  min-width: 0;
+  padding: 12px 4px;
+  text-align: center;
 }
 
 .color-row {
@@ -220,7 +259,7 @@
   background: rgba(16, 19, 25, 0.92);
   border-radius: 16px;
   padding: 14px;
-  min-width: 200px;
+  min-width: 240px;
 }
 
 .speed-overlay-label {
