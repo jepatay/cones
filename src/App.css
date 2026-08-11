@@ -231,6 +231,90 @@
   margin-bottom: 10px;
 }
 
+.speed-pill,
+.round-pill {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.18);
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+.round-pill {
+  top: max(66px, calc(env(safe-area-inset-top) + 52px));
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ---------- Double Call ---------- */
+
+.double-call-split {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.double-call-half {
+  flex: 1;
+}
+
+/* ---------- Go / No-Go ---------- */
+
+.no-go-symbol {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45vmin;
+  height: 45vmin;
+  opacity: 0.85;
+  animation: no-go-pulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes no-go-pulse {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+/* ---------- Sequence Recall ---------- */
+
+.sequence-turn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.sequence-btn {
+  flex: 1;
+  border: none;
+  font-size: 4rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sequence-btn-miss {
+  background: #1b2029;
+  color: #e8341e;
+}
+
+.sequence-btn-hit {
+  background: #232a36;
+  color: #8cc63f;
+}
+
 /* ---------- Summary ---------- */
 
 .summary-screen {

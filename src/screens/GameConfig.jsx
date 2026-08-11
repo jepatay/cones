@@ -1,25 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { COLORS } from '../config/colors';
-import { CONE_COUNTS, DURATIONS, SPEED_ORDER, SPEED_SETTINGS } from '../config/engineConfig';
+import { CONE_COUNTS, DURATIONS, REP_COUNTS, SPEED_LEVELS } from '../config/engineConfig';
 
 export default function GameConfig({ gameMode, initialConfig, onStart, onBack }) {
   const [coneCount, setConeCount] = useState(initialConfig.coneCount);
   const [activeColors, setActiveColors] = useState(initialConfig.activeColors);
   const [speed, setSpeed] = useState(initialConfig.speed);
   const [duration, setDuration] = useState(initialConfig.duration);
+  const [repCount, setRepCount] = useState(initialConfig.repCount);
+  const [noGoColor, setNoGoColor] = useState(initialConfig.noGoColor);
+
+  const minColors = gameMode.minColors ?? 1;
 
   const toggleColor = (id) => {
     setActiveColors((prev) => {
       if (prev.includes(id)) {
-        if (prev.length === 1) return prev; // at least 1 must stay on
+        if (prev.length <= minColors) return prev;
         return prev.filter((c) => c !== id);
       }
       return [...prev, id];
     });
   };
 
+  // Keep the No-Go color valid if it gets toggled off.
+  useEffect(() => {
+    if (gameMode.id === 'go-no-go' && !activeColors.includes(noGoColor)) {
+      setNoGoColor(activeColors[0]);
+    }
+  }, [gameMode.id, activeColors, noGoColor]);
+
   const handleStart = () => {
-    onStart({ coneCount, activeColors, speed, duration });
+    onStart({ coneCount, activeColors, speed, duration, repCount, noGoColor });
   };
 
   return (
@@ -44,7 +55,7 @@ export default function GameConfig({ gameMode, initialConfig, onStart, onBack })
       </section>
 
       <section className="config-section">
-        <h2>Active colors</h2>
+        <h2>Active colors{minColors > 1 ? ` (at least ${minColors})` : ''}</h2>
         <div className="color-row">
           {COLORS.map((color) => {
             const on = activeColors.includes(color.id);
@@ -65,17 +76,38 @@ export default function GameConfig({ gameMode, initialConfig, onStart, onBack })
         </div>
       </section>
 
+      {gameMode.id === 'go-no-go' && (
+        <section className="config-section">
+          <h2>No-Go color</h2>
+          <div className="color-row">
+            {COLORS.filter((c) => activeColors.includes(c.id)).map((color) => (
+              <button
+                key={color.id}
+                type="button"
+                className={`color-swatch${noGoColor === color.id ? ' color-swatch-active' : ''}`}
+                style={{ backgroundColor: color.hex }}
+                onClick={() => setNoGoColor(color.id)}
+                aria-pressed={noGoColor === color.id}
+                aria-label={`${color.label} is the No-Go color`}
+              >
+                {noGoColor !== color.id && <span className="color-swatch-off" />}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="config-section">
         <h2>Speed</h2>
         <div className="option-row">
-          {SPEED_ORDER.map((key) => (
+          {SPEED_LEVELS.map((lvl) => (
             <button
-              key={key}
+              key={lvl.id}
               type="button"
-              className={`option-pill${speed === key ? ' option-pill-active' : ''}`}
-              onClick={() => setSpeed(key)}
+              className={`option-pill${speed === lvl.id ? ' option-pill-active' : ''}`}
+              onClick={() => setSpeed(lvl.id)}
             >
-              {SPEED_SETTINGS[key].label}
+              {lvl.label}
             </button>
           ))}
         </div>
@@ -93,6 +125,24 @@ export default function GameConfig({ gameMode, initialConfig, onStart, onBack })
                 onClick={() => setDuration(d)}
               >
                 {d}s
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {gameMode.id === 'react-sprint' && (
+        <section className="config-section">
+          <h2>Reps</h2>
+          <div className="option-row">
+            {REP_COUNTS.map((n) => (
+              <button
+                key={n}
+                type="button"
+                className={`option-pill${repCount === n ? ' option-pill-active' : ''}`}
+                onClick={() => setRepCount(n)}
+              >
+                {n}
               </button>
             ))}
           </div>

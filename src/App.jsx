@@ -24,10 +24,6 @@ export default function App() {
     setScreen('play');
   };
 
-  const handleExitPlay = () => {
-    setScreen('config');
-  };
-
   const handleSessionEnd = (result) => {
     setSessionResult(result);
     setScreen('summary');
@@ -62,14 +58,7 @@ export default function App() {
   }
 
   if (screen === 'play') {
-    return (
-      <Play
-        gameId={gameId}
-        config={config}
-        onExit={handleExitPlay}
-        onEnd={handleSessionEnd}
-      />
-    );
+    return <Play gameId={gameId} config={config} onEnd={handleSessionEnd} />;
   }
 
   return (
