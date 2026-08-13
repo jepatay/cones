@@ -1,161 +1,163 @@
-// Circle-and-arrow explainer for each game mode, shown on its config
-// screen. Circle = color cue, arrow+clock = changes automatically (never a
-// tap), triangle = the physical cone, slashed circle = freeze/No-Go.
+// Simple picture for each game, aimed at a kid reading it before they play.
+// One color, one cone, one arrow — the picture shows the single thing that
+// matters, and the caption says it in plain words.
 const RED = '#E8341E';
 const ORANGE = '#F5820C';
 const YELLOW = '#F5C400';
 const GREEN = '#8CC63F';
 const DIM = '#9aa1ad';
+const INK = '#f3f4f6';
 const SURFACE_2 = '#171b22';
 const ACCENT = '#3a6df0';
 
+function RepeatBadge({ cx, cy }) {
+  return (
+    <>
+      <circle cx={cx} cy={cy} r="15" fill={SURFACE_2} stroke="currentColor" strokeWidth="2" />
+      <text x={cx} y={cy + 6} textAnchor="middle" fontSize="17" fill="currentColor">&#8635;</text>
+    </>
+  );
+}
+
+function Swatch({ x, y, size = 72, color, repeat }) {
+  return (
+    <>
+      <rect x={x} y={y} width={size} height={size} rx="16" fill={color} />
+      {repeat && <RepeatBadge cx={x + size - 2} cy={y + 2} />}
+    </>
+  );
+}
+
+function Cone({ cx, baseY, size = 100, color }) {
+  const halfW = size * 0.4;
+  const topW = size * 0.1;
+  const top = baseY - size;
+  const stripeY = baseY - size * 0.4;
+  return (
+    <>
+      <polygon points={`${cx - halfW},${baseY} ${cx + halfW},${baseY} ${cx + topW},${top} ${cx - topW},${top}`} fill={color} />
+      <rect x={cx - halfW * 0.62} y={stripeY - 5} width={halfW * 1.24} height="10" rx="2" fill="#fff" opacity="0.85" />
+      <rect x={cx - halfW - 6} y={baseY} width={(halfW + 6) * 2} height="8" rx="3" fill={DIM} opacity="0.6" />
+    </>
+  );
+}
+
+function Arrow({ x, y1, y2, markerId }) {
+  return <line x1={x} y1={y1} x2={x} y2={y2} stroke="currentColor" strokeWidth="5" strokeLinecap="round" markerEnd={`url(#${markerId})`} />;
+}
+
+function ArrowMarker({ id }) {
+  return (
+    <marker id={id} markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <polygon points="0,0 10,5 0,10" fill="currentColor" />
+    </marker>
+  );
+}
+
 const DIAGRAMS = {
   'call-touch': {
-    viewBox: '0 0 340 180',
-    caption: 'Colors keep changing on the timer, forever — touch the matching cone each time. Runs until you exit.',
+    viewBox: '0 0 200 300',
+    caption: 'The screen picks a color all by itself. Run and touch the cone that matches. Then it picks a new color — get ready again!',
     content: (
       <>
-        <defs>
-          <marker id="diagArr1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="currentColor" /></marker>
-        </defs>
-        <circle cx="50" cy="36" r="18" fill={RED} />
-        <circle cx="150" cy="36" r="18" fill={GREEN} />
-        <circle cx="250" cy="36" r="18" fill={YELLOW} />
-        <line x1="72" y1="36" x2="128" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr1)" />
-        <line x1="172" y1="36" x2="228" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr1)" />
-        <line x1="272" y1="36" x2="310" y2="36" stroke="currentColor" strokeWidth="2" strokeDasharray="1 5" strokeLinecap="round" />
-        <text x="322" y="41" fontSize="16" fill={DIM}>&hellip;</text>
-        <line x1="150" y1="58" x2="150" y2="92" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr1)" />
-        <polygon points="135,132 165,132 150,100" fill={DIM} opacity="0.4" />
-        <rect x="133" y="132" width="34" height="5" rx="2" fill={DIM} opacity="0.55" />
-        <text x="150" y="160" textAnchor="middle" fontSize="12" fill={DIM}>touch the matching cone</text>
-        <text x="150" y="174" textAnchor="middle" fontSize="11" fill={ACCENT}>no set length — exit whenever</text>
+        <defs><ArrowMarker id="d1" /></defs>
+        <Swatch x={64} y={34} color={ORANGE} repeat />
+        <Arrow x={100} y1={118} y2={168} markerId="d1" />
+        <Cone cx={100} baseY={270} color={ORANGE} />
+        <text x="100" y="294" textAnchor="middle" fontSize="16" fontWeight="700" fill={INK}>Touch it!</text>
       </>
     ),
   },
   'beat-clock': {
-    viewBox: '0 0 340 100',
-    caption: 'Same automatic flashing as Call & Touch, but a countdown ends the session for you.',
+    viewBox: '0 0 200 300',
+    caption: "Just like Call & Touch — colors change all by themselves. But there's a timer! When it runs out, the game stops.",
     content: (
       <>
-        <defs>
-          <marker id="diagArr2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="currentColor" /></marker>
-        </defs>
-        <circle cx="50" cy="36" r="18" fill={ORANGE} />
-        <circle cx="150" cy="36" r="18" fill={RED} />
-        <circle cx="250" cy="36" r="18" fill={GREEN} />
-        <line x1="72" y1="36" x2="128" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr2)" />
-        <line x1="172" y1="36" x2="228" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr2)" />
-        <rect x="30" y="78" width="280" height="10" rx="5" fill={SURFACE_2} stroke="currentColor" strokeWidth="1.2" />
-        <rect x="30" y="78" width="170" height="10" rx="5" fill={ACCENT} opacity="0.75" />
-        <text x="150" y="12" textAnchor="middle" fontSize="11" fill={ACCENT}>30 / 60 / 90s, your choice</text>
+        <defs><ArrowMarker id="d2" /></defs>
+        <rect x="40" y="10" width="120" height="14" rx="7" fill={SURFACE_2} stroke="currentColor" strokeWidth="1.4" />
+        <rect x="40" y="10" width="80" height="14" rx="7" fill={ACCENT} />
+        <Swatch x={64} y={40} color={RED} repeat />
+        <Arrow x={100} y1={124} y2={168} markerId="d2" />
+        <Cone cx={100} baseY={270} color={RED} />
+        <text x="100" y="294" textAnchor="middle" fontSize="16" fontWeight="700" fill={INK}>Touch it!</text>
       </>
     ),
   },
   'react-sprint': {
-    viewBox: '0 0 340 170',
-    caption: 'Same engine, but it stops itself at a target rep count (10/20/30) — a defined sprint set instead of open-ended.',
+    viewBox: '0 0 200 300',
+    caption: 'Just like Call & Touch — colors change all by themselves. But you only get a set number of turns, like 10. Finish them all and you’re done!',
     content: (
       <>
-        <defs>
-          <marker id="diagArr3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="currentColor" /></marker>
-        </defs>
-        <circle cx="50" cy="36" r="18" fill={GREEN} />
-        <circle cx="150" cy="36" r="18" fill={ORANGE} />
-        <circle cx="250" cy="36" r="18" fill={RED} />
-        <line x1="72" y1="36" x2="128" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr3)" />
-        <line x1="172" y1="36" x2="228" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr3)" />
-        <rect x="120" y="70" width="100" height="34" rx="8" fill={SURFACE_2} stroke="currentColor" strokeWidth="1.4" />
-        <text x="170" y="92" textAnchor="middle" fontSize="14" fontFamily="ui-monospace,Menlo,Consolas,monospace" fill="#f3f4f6">9 / 10</text>
-        <line x1="170" y1="104" x2="170" y2="124" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr3)" />
-        <text x="170" y="144" textAnchor="middle" fontSize="12" fill={DIM}>session ends at your target rep count</text>
+        <defs><ArrowMarker id="d3" /></defs>
+        <rect x="65" y="8" width="70" height="26" rx="13" fill={SURFACE_2} stroke="currentColor" strokeWidth="1.4" />
+        <text x="100" y="26" textAnchor="middle" fontSize="14" fontWeight="700" fontFamily="ui-monospace,Menlo,Consolas,monospace" fill={INK}>7 / 10</text>
+        <Swatch x={64} y={44} color={GREEN} repeat />
+        <Arrow x={100} y1={128} y2={168} markerId="d3" />
+        <Cone cx={100} baseY={270} color={GREEN} />
+        <text x="100" y="294" textAnchor="middle" fontSize="16" fontWeight="700" fill={INK}>Touch it!</text>
       </>
     ),
   },
   'sequence-recall': {
-    viewBox: '0 0 340 200',
-    caption: "The only mode with a real tap — not to react, but to self-report a finished physical attempt (there's no sensor on the cones).",
+    viewBox: '0 0 300 300',
+    caption: 'Watch the colors light up, one after another. Remember the order! Then touch the cones in that same order. Get it right and one more color gets added. Get it wrong and the game ends.',
     content: (
       <>
-        <defs>
-          <marker id="diagArr4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="currentColor" /></marker>
-        </defs>
-        <text x="14" y="30" fontSize="11" fill={DIM}>watch</text>
-        <circle cx="90" cy="26" r="13" fill={RED} />
-        <circle cx="130" cy="26" r="13" fill={YELLOW} />
-        <circle cx="170" cy="26" r="13" fill={RED} />
-        <line x1="103" y1="26" x2="117" y2="26" stroke="currentColor" strokeWidth="1.6" markerEnd="url(#diagArr4)" />
-        <line x1="143" y1="26" x2="157" y2="26" stroke="currentColor" strokeWidth="1.6" markerEnd="url(#diagArr4)" />
+        <defs><ArrowMarker id="d4" /></defs>
+        <text x="90" y="18" textAnchor="middle" fontSize="12" fontWeight="700" fill={DIM}>1. WATCH</text>
+        <rect x="65" y="26" width="50" height="50" rx="12" fill={RED} />
+        <text x="90" y="94" textAnchor="middle" fontSize="12" fill={DIM}>1st</text>
+        <rect x="155" y="26" width="50" height="50" rx="12" fill={YELLOW} />
+        <text x="180" y="94" textAnchor="middle" fontSize="12" fill={DIM}>2nd</text>
+        <line x1="117" y1="51" x2="153" y2="51" stroke="currentColor" strokeWidth="3" markerEnd="url(#d4)" />
 
-        <text x="14" y="76" fontSize="11" fill={DIM}>repeat</text>
-        <polygon points="80,90 100,90 90,66" fill={DIM} opacity="0.4" />
-        <polygon points="120,90 140,90 130,66" fill={DIM} opacity="0.4" />
-        <polygon points="160,90 180,90 170,66" fill={DIM} opacity="0.4" />
-        <line x1="90" y1="40" x2="90" y2="64" stroke="currentColor" strokeWidth="1.4" strokeDasharray="2 4" />
-        <line x1="130" y1="40" x2="130" y2="64" stroke="currentColor" strokeWidth="1.4" strokeDasharray="2 4" />
-        <line x1="170" y1="40" x2="170" y2="64" stroke="currentColor" strokeWidth="1.4" strokeDasharray="2 4" />
+        <text x="90" y="122" textAnchor="middle" fontSize="12" fontWeight="700" fill={DIM}>2. COPY IT</text>
+        <line x1="90" y1="78" x2="90" y2="130" stroke="currentColor" strokeWidth="2" strokeDasharray="2 5" />
+        <line x1="180" y1="78" x2="180" y2="130" stroke="currentColor" strokeWidth="2" strokeDasharray="2 5" />
+        <Cone cx={90} baseY={200} size={70} color={RED} />
+        <Cone cx={180} baseY={200} size={70} color={YELLOW} />
 
-        <rect x="55" y="120" width="105" height="34" rx="17" fill={SURFACE_2} stroke={GREEN} strokeWidth="1.6" />
-        <text x="107" y="142" textAnchor="middle" fontSize="12" fill={GREEN}>&#10003; nailed it</text>
-        <path d="M107,120 C107,90 40,70 40,40" fill="none" stroke={GREEN} strokeWidth="1.6" markerEnd="url(#diagArr4)" />
-
-        <rect x="180" y="120" width="105" height="34" rx="17" fill={SURFACE_2} stroke={RED} strokeWidth="1.6" />
-        <text x="232" y="142" textAnchor="middle" fontSize="12" fill={RED}>&#10005; missed it</text>
-        <line x1="232" y1="154" x2="232" y2="176" stroke={RED} strokeWidth="1.6" markerEnd="url(#diagArr4)" />
-        <text x="232" y="192" textAnchor="middle" fontSize="11" fill={DIM}>session ends</text>
+        <rect x="20" y="230" width="120" height="42" rx="21" fill={SURFACE_2} stroke={GREEN} strokeWidth="2" />
+        <text x="80" y="256" textAnchor="middle" fontSize="15" fontWeight="700" fill={GREEN}>&#10003; Got it!</text>
+        <rect x="160" y="230" width="120" height="42" rx="21" fill={SURFACE_2} stroke={RED} strokeWidth="2" />
+        <text x="220" y="256" textAnchor="middle" fontSize="15" fontWeight="700" fill={RED}>&#10005; Oops!</text>
       </>
     ),
   },
   'double-call': {
-    viewBox: '0 0 340 170',
-    caption: 'Two colors shown together, not in sequence — touch both cones. Needs at least 2 active colors.',
+    viewBox: '0 0 300 280',
+    caption: 'Two colors show up at the exact same time. Touch both matching cones!',
     content: (
       <>
-        <defs>
-          <marker id="diagArr5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="currentColor" /></marker>
-        </defs>
-        <circle cx="110" cy="34" r="19" fill={YELLOW} />
-        <circle cx="230" cy="34" r="19" fill={GREEN} />
-        <text x="170" y="40" textAnchor="middle" fontSize="16" fill={DIM}>+</text>
-        <text x="170" y="12" textAnchor="middle" fontSize="11" fill={ACCENT}>shown together, not in sequence</text>
-        <line x1="110" y1="56" x2="110" y2="92" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr5)" />
-        <line x1="230" y1="56" x2="230" y2="92" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr5)" />
-        <polygon points="95,132 125,132 110,100" fill={DIM} opacity="0.4" />
-        <rect x="93" y="132" width="34" height="5" rx="2" fill={DIM} opacity="0.55" />
-        <polygon points="215,132 245,132 230,100" fill={DIM} opacity="0.4" />
-        <rect x="213" y="132" width="34" height="5" rx="2" fill={DIM} opacity="0.55" />
-        <text x="170" y="164" textAnchor="middle" fontSize="12" fill={DIM}>touch both cones</text>
+        <defs><ArrowMarker id="d5" /></defs>
+        <RepeatBadge cx={150} cy={20} />
+        <Swatch x={53} y={40} size={64} color={YELLOW} />
+        <text x="150" y="80" textAnchor="middle" fontSize="26" fontWeight="700" fill={DIM}>+</text>
+        <Swatch x={183} y={40} size={64} color={GREEN} />
+        <Arrow x={85} y1={112} y2={158} markerId="d5" />
+        <Arrow x={215} y1={112} y2={158} markerId="d5" />
+        <Cone cx={85} baseY={260} size={90} color={YELLOW} />
+        <Cone cx={215} baseY={260} size={90} color={GREEN} />
       </>
     ),
   },
   'go-no-go': {
-    viewBox: '0 0 340 160',
-    caption: 'You pick which color is No-Go in setup — it gets the slash overlay live too, not just in this diagram.',
+    viewBox: '0 0 300 300',
+    caption: 'Most colors mean GO — run and touch that cone! But your special STOP color means freeze — don’t move at all.',
     content: (
       <>
-        <defs>
-          <marker id="diagArr6" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="currentColor" /></marker>
-        </defs>
-        <circle cx="50" cy="36" r="18" fill={GREEN} />
-        <circle cx="150" cy="36" r="18" fill={RED} />
-        <circle cx="150" cy="36" r="18" fill="none" stroke="currentColor" strokeWidth="2.4" />
-        <line x1="139" y1="25" x2="161" y2="47" stroke="currentColor" strokeWidth="2.4" />
-        <circle cx="250" cy="36" r="18" fill={YELLOW} />
-        <line x1="72" y1="36" x2="128" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr6)" />
-        <line x1="172" y1="36" x2="228" y2="36" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr6)" />
+        <defs><ArrowMarker id="d6" /></defs>
+        <Swatch x={53} y={20} size={64} color={GREEN} repeat />
+        <Arrow x={85} y1={104} y2={148} markerId="d6" />
+        <Cone cx={85} baseY={250} size={90} color={GREEN} />
+        <text x="85" y="284" textAnchor="middle" fontSize="18" fontWeight="800" fill={GREEN}>GO!</text>
 
-        <line x1="50" y1="58" x2="50" y2="90" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr6)" />
-        <polygon points="35,128 65,128 50,96" fill={DIM} opacity="0.4" />
-        <text x="50" y="150" textAnchor="middle" fontSize="11" fill={DIM}>go &mdash; touch</text>
-
-        <line x1="150" y1="58" x2="150" y2="90" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr6)" />
-        <circle cx="150" cy="112" r="16" fill="none" stroke="currentColor" strokeWidth="2.4" />
-        <line x1="139" y1="101" x2="161" y2="123" stroke="currentColor" strokeWidth="2.4" />
-        <text x="150" y="150" textAnchor="middle" fontSize="11" fill={DIM}>no-go &mdash; freeze</text>
-
-        <line x1="250" y1="58" x2="250" y2="90" stroke="currentColor" strokeWidth="2" markerEnd="url(#diagArr6)" />
-        <polygon points="235,128 265,128 250,96" fill={DIM} opacity="0.4" />
-        <text x="250" y="150" textAnchor="middle" fontSize="11" fill={DIM}>go &mdash; touch</text>
+        <rect x="183" y="20" width="64" height="64" rx="16" fill={RED} />
+        <line x1="188" y1="25" x2="242" y2="79" stroke="#fff" strokeWidth="5" opacity="0.9" />
+        <Arrow x={215} y1={104} y2={148} markerId="d6" />
+        <circle cx="215" cy="200" r="48" fill="none" stroke="currentColor" strokeWidth="7" />
+        <line x1="182" y1="167" x2="248" y2="233" stroke="currentColor" strokeWidth="7" />
+        <text x="215" y="284" textAnchor="middle" fontSize="18" fontWeight="800" fill={RED}>STOP!</text>
       </>
     ),
   },
